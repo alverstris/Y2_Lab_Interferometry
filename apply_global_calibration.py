@@ -15,7 +15,7 @@ import scipy.interpolate as spi
 #Step 1 get the data and the x position
 file=r"C:\Users\alver\OneDrive - Imperial College London\Documents\Local Lab\Interferometry\Data\green_1_white_2_8.8to13.8.txt" #this is the data
 
-def fft_full_limited(file):
+def fft_full_limited(file,y_array_index_passed = 0):
     results = rd.read_data3(file)
 
     # Describe the global calibration used (from either Task 6, or crossing_points.py)
@@ -25,7 +25,7 @@ def fft_full_limited(file):
 
     # We are only going to need data from one detector
     # make sure the index is the right one for your data!
-    y1 = np.array(results[0])
+    y1 = np.array(results[y_array_index_passed])
 
 
     # get x-axis data from the results
