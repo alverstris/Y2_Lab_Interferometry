@@ -12,22 +12,43 @@ import scipy.signal as sps
 import scipy.interpolate as spi
 
 
-# get the data and the x position
-def fft_spectra(file):
+#Step 1 get the data and the x position
+file=r"C:\Users\alver\OneDrive - Imperial College London\Documents\Local Lab\Interferometry\Data\green_1_white_2_8.8to13.8.txt" #this is the data
+
+def fft_full_limited(file):
     results = rd.read_data3(file)
 
-    metres_per_microstep = 1.94e-11 # metres
+    # Describe the global calibration used (from either Task 6, or crossing_points.py)
+    metres_per_microstep = 15.6e-12 # metres
     # if from Task 6, need to multiple by factor of 2 to account for the mirror movement to path difference conversion
-    metres_per_microstep *= 2.0
+    metres_per_microstep = 2.0*metres_per_microstep
 
+    # We are only going to need data from one detector
+    # make sure the index is the right one for your data!
     y1 = np.array(results[0])
 
+
     # get x-axis data from the results
-    x = np.array(results[5])*metres_per_microstep
+    # factor of 2 arrives because we assume conversion does not include path difference to motor distance factor
+    x = np.array(results[5])
+
+    filter_indices = np.where(np.diff(x) > 0)[0] + 1
+    x = x[filter_indices] * metres_per_microstep
+    y1 = y1[filter_indices]
 
     # centre the y-axis on zero by either subtracting the mean
-
+    # or using the Butterworth filter
     y1 = y1 - y1.mean()
+
+    # Butterworth filter to correct for offset
+    #filter_order = 2
+    #freq = 1 #cutoff frequency
+    #sampling = 50 # sampling frequency
+    #sos = signal.butter(filter_order, freq, 'hp', fs=sampling, output='sos')
+    #filtered = signal.sosfilt(sos, y1)
+    #y1 = filtered
+
+
 
     # Cubic Spline part - the FFT requires a regular grid on the x-axis
     N = 100000 # these are the number of points that you will resample - try changing this and look how well the resampling follows the data.
@@ -36,7 +57,7 @@ def fft_spectra(file):
     cs = spi.CubicSpline(x, y) # construct the cubic spline function
 
 
-    # FFT to extract spectra
+    # step 5 FFT to extract spectra
     yf1=spf.fft(cs(xs))
     xf1=spf.fftfreq(len(xs)) # setting the correct x-axis for the fourier transform. Osciallations/step  
     xf1=spf.fftshift(xf1) #shifts to make it easier (google if interested)
@@ -50,13 +71,14 @@ def fft_spectra(file):
 
     # plt.figure("Spectrum using global calibration FFT")
     # plt.title('Data from: \n%s'%file)
-    # plt.plot(abs(repx1),abs(yf1[int(len(xf1)/2+1):len(xf1)]))
-    # plt.xlim(300e-9,800e-9)
+    wavelengths = abs(repx1)
+    intensities = abs(yf1[int(len(xf1)/2+1):len(xf1)])
+    # plt.plot(wavelengths, intensities)
+    # plt.xlim(300e-9,600e-9)
     # plt.ylabel('Intensity (a.u.)')
     # plt.show()
+    # plt.savefig("figures/spectrum_from_global_calibration.png")
 
-    return abs(repx1),abs(yf1[int(len(xf1)/2+1):len(xf1)]),(300e-9,800e-9)
+    return wavelengths, intensities
 
-
-
-
+    # print(max(intensities),wavelengths[np.argmax(intensities)])
