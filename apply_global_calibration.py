@@ -38,15 +38,15 @@ def fft_full_limited(file,y_array_index_passed = 0):
 
     # centre the y-axis on zero by either subtracting the mean
     # or using the Butterworth filter
-    y1 = y1 - y1.mean()
+    # y1 = y1 - y1.mean()
 
     # Butterworth filter to correct for offset
-    #filter_order = 2
-    #freq = 1 #cutoff frequency
-    #sampling = 50 # sampling frequency
-    #sos = signal.butter(filter_order, freq, 'hp', fs=sampling, output='sos')
-    #filtered = signal.sosfilt(sos, y1)
-    #y1 = filtered
+    filter_order = 2
+    freq = 1 #cutoff frequency
+    sampling = 50 # sampling frequency
+    sos = signal.butter(filter_order, freq, 'hp', fs=sampling, output='sos')
+    filtered = signal.sosfilt(sos, y1)
+    y1 = filtered
 
 
 
@@ -71,8 +71,8 @@ def fft_full_limited(file,y_array_index_passed = 0):
 
     # plt.figure("Spectrum using global calibration FFT")
     # plt.title('Data from: \n%s'%file)
-    wavelengths = abs(repx1)
-    intensities = abs(yf1[int(len(xf1)/2+1):len(xf1)])
+    wavelengths = repx1
+    intensities = yf1[int(len(xf1)/2+1):len(xf1)]
     # plt.plot(wavelengths, intensities)
     # plt.xlim(300e-9,600e-9)
     # plt.ylabel('Intensity (a.u.)')
