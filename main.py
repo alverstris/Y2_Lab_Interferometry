@@ -40,24 +40,27 @@ for i in range(len(y2_matched)):
 
 
 
-scanned_data = scan_function(abs(x),abs(filter), threshold_or_range=False, window_range = (300e-9,600e-9))
+# scanned_data = scan_function(abs(x),abs(filter), threshold_or_range=False, window_range = (300e-9,600e-9))
 
-components, covariance = fit_sinc(scanned_data[0], scanned_data[1])
-# print(components)
-plt.plot(x, sinc_squared(x, *components))
+# components, covariance = fit_sinc(scanned_data[0], scanned_data[1])
+# # print(components)
+# plt.plot(x, sinc_squared(x, *components))
 
-min_vals, max_vals = max_min_covariance_handler(components, covariance, 10e100)
+# min_vals, max_vals = max_min_covariance_handler(components, covariance, 10e100)
 
-print(min_vals, max_vals)
-alpha_plots, alpha_region = 0.5, 1
-plt.fill_between(x, sinc_squared(x, *min_vals), sinc_squared(x, *max_vals), color='grey', alpha=alpha_region, label='2$ \sigma $ range for fit')
-plt.plot(x,abs(filter), label = "filter func data", alpha = alpha_plots)
+# print(min_vals, max_vals)
+# alpha_plots, alpha_region = 0.5, 1
+# plt.fill_between(x, sinc_squared(x, *min_vals), sinc_squared(x, *max_vals), color='grey', alpha=alpha_region, label='2$ \sigma $ range for fit')
+# plt.plot(x,abs(filter), label = "filter func data", alpha = alpha_plots)
 # plt.plot(scanned_data[0],scanned_data[1], label = "shortened data", alpha = alpha_plots)
-plt.plot(x, sinc_squared(x,*components), label = "fitted function", alpha = alpha_plots)
+# plt.plot(x, sinc_squared(x,*components), label = "fitted function", alpha = alpha_plots)
 
-plt.title("Green filter as a STF")
+
+plt.plot(x,abs(y), label= "normalised data")
+plt.title("Data from: " + file)
+# # plt.title("Green filter as a STF")
 plt.legend()
-plt.xlim(100e-9,900e-9)
+plt.xlim(400e-9,700e-9)
 plt.ylabel('Intensity (a.u.)')
 plt.xlabel('Wavelength (m)')
 plt.grid()

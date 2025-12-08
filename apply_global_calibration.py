@@ -19,7 +19,7 @@ def fft_full_limited(file,y_array_index_passed = 0):
     results = rd.read_data3(file)
 
     # Describe the global calibration used (from either Task 6, or crossing_points.py)
-    metres_per_microstep = 15.6e-12 # metres
+    metres_per_microstep = 20e-12 # metres
     # if from Task 6, need to multiple by factor of 2 to account for the mirror movement to path difference conversion
     metres_per_microstep = 2.0*metres_per_microstep
 

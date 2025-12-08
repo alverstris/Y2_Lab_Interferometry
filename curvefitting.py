@@ -108,22 +108,28 @@ def fit_sinc(x,y, p0 = None):
     return popt, pcov
     
 
-def fit_gaussian(x_data, y_data, p0=None):
+def fit_gaussian(x_data, y_data, p0=None, sigma = 0, absolute_sigma = False):
     """Fit a Gaussian to the provided data."""
+    a = max(y_data)
+    x_min, x_max = min(x_data), max(x_data)
     if p0 is None:
         # sigma guess from variance
-        mean = np.sum(x_data * y_data) / np.sum(y_data)
+        mean = x_data[np.argmax(y_data)]
         sigma_guess = np.std(x_data, ddof = 1, mean = mean)
 
-        a, x_max, x_min = max(y_data), max(x_data), min(x_data)
-        p0 = [2*a, mean , sigma_guess, min(y_data)]
+        
+        p0 = [a, mean , sigma_guess, min(y_data)]
     
-    # lower_bounds = [0.2 * a, min(x_data), 0.01 * (x_max-x_min), -np.inf]
-    # upper_bounds = [np.inf, max(x_data), x_max-x_min, np.inf]
-    # bounds = (lower_bounds, upper_bounds)
+    lower_bounds = [0,      x_min, 0,          -a]
+    upper_bounds = [np.inf, x_max, x_max-x_min, a]
+    bounds = (lower_bounds, upper_bounds)
     
-    popt, pcov = curve_fit(gaussian, x_data, y_data, p0=p0)
-    return popt, pcov
+    if absolute_sigma != False:
+        popt, pcov = curve_fit(gaussian,x_data,y_data, p0 = p0,sigma = sigma, absolute_sigma= True, bounds=bounds)
+        return popt , pcov
+    else:
+        popt, pcov = curve_fit(gaussian, x_data, y_data, p0=p0, bounds=bounds)
+        return popt, pcov
 
 def sinc_combo(x,amp, omega, phi, omega_2, phi_2, c):
     return amp * (np.sin(omega * x + phi)/(omega* x + phi))**2 * np.sin(omega_2 * x + phi_2) + c
