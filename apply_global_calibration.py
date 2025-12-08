@@ -64,6 +64,7 @@ def fft_full_limited(file,y_array_index_passed = 0):
     yf1=spf.fftshift(yf1)
     xx1=xf1[int(len(xf1)/2+1):len(xf1)]
 
+    yf1_norm = yf1 / np.max(np.abs(yf1)) # normaliser, get rid of if issues occur
     # convert x-axis to meaningful units - wavelength
     distance = xs[1:]-xs[:-1]
     # rather than the amplitude
@@ -72,7 +73,7 @@ def fft_full_limited(file,y_array_index_passed = 0):
     # plt.figure("Spectrum using global calibration FFT")
     # plt.title('Data from: \n%s'%file)
     wavelengths = repx1
-    intensities = yf1[int(len(xf1)/2+1):len(xf1)]
+    intensities = yf1_norm[int(len(xf1)/2+1):len(xf1)]
     # plt.plot(wavelengths, intensities)
     # plt.xlim(300e-9,600e-9)
     # plt.ylabel('Intensity (a.u.)')
